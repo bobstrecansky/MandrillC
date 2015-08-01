@@ -5,5 +5,7 @@ mandrillC: mandrill.c
 	$(CC)  -o $@ ${OBJS} ${CFLAGS}
 
 clean:
-	rm -f *.o mandrillrc a.out
+	rm -f *.o a.out mandrillC
 
+cleanRC:
+	rm -f *.o mandrillrc a.out mandrillC
