@@ -8,19 +8,6 @@
 
 const char *MANDRILLDOTFILE = "mandrillrc";
 
-
-int addApiKey(){
-	FILE * mandrillDotFile;
-	char apiKey[30];
-	printf ("Enter New API Key: ");
-	//fgets (apiKey,30,stdin);
-	scanf("%s", apiKey);
-	mandrillDotFile = fopen (MANDRILLDOTFILE,"a+");
-	fputs (apiKey,mandrillDotFile);
-	fclose (mandrillDotFile);
-	return 0;
-}
-
 void printBanner(){
 printf("\n-------------------------------------------------------------\n");
 printf("#     #                                              #####\n");
@@ -39,13 +26,13 @@ void curlRequest(){
  
   curl = curl_easy_init();
   if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://example.com");
+    curl_easy_setopt(curl, CURLOPT_URL, "https://mandrillapp.com/api/1.0/users/ping.json");
     /* example.com is redirected, so we tell libcurl to follow redirection */ 
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
  
     /* Perform the request, res will get the return code */ 
     res = curl_easy_perform(curl);
-
+    printf("present");
     /* Check for errors */ 
     if(res != CURLE_OK)
       fprintf(stderr, "curl_easy_perform() failed: %s\n",
@@ -56,34 +43,53 @@ void curlRequest(){
   }
 }
 
-
 int homeSelection(){
 int menuSelection;
 printf("Make your selection:");
 printf("\n1.) Users Calls []");
 scanf("%d", &menuSelection);
 	switch (menuSelection){
-		case '1':
-			printBanner();
+		case 1:
+			curlRequest();
 		default:
 			return 0;
 	}
 }
 
-int readDotFile(){
-int i;
-char * keys[MAXAPIKEYS];
-FILE * mandrillDotFile;
+void readDotFile(){
+FILE *mandrillDotFile;
 mandrillDotFile = fopen(MANDRILLDOTFILE, "r");
+
+char apiKeyArray[MAXAPIKEYS];
+int i;
+
 	for(i=0; i<MAXAPIKEYS; i++){
-		fscanf(mandrillDotFile, "%s", keys[i]);
-	}	
+		fscanf(mandrillDotFile, "%s", &apiKeyArray[i]);
+	}
+
+printf("choose the API key you wish to use:");
+//printf("%s", &apiKeyArray[0]);
+homeSelection();
 }
+
+void addApiKey(){
+	FILE * mandrillDotFile;
+	char apiKey[30];
+	printf ("Enter New API Key: ");
+	//fgets (apiKey,30,stdin);
+	scanf("%s", apiKey);
+	mandrillDotFile = fopen (MANDRILLDOTFILE,"a+");
+	fputs (apiKey,mandrillDotFile);
+	fclose (mandrillDotFile);
+	homeSelection();
+}
+
 
 int dotFileCheck(){
 	if( access( MANDRILLDOTFILE, F_OK ) != -1 ) {
     	// file exists
-		homeSelection();
+		//homeSelection();
+		readDotFile();
 	}	 
 
 	else {
@@ -96,11 +102,11 @@ int dotFileCheck(){
 			}
 			else return 0;
 	}
+return 0;
 }
 
 int main(void){
 printBanner();
 dotFileCheck();
-
-//addApiKey();
+return 0;
 }
