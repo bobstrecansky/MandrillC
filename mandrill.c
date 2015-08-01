@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <curl/curl.h>
 
 #define MAXAPIKEYS 255
 #define APIKEYLENGTH 30
@@ -32,6 +33,43 @@ printf("#     # #    # #    # #####  #    # # ###### ######  #####\n");
 printf("-------------------------------------------------------------\n\n");
 }
 
+void curlRequest(){
+  CURL *curl;
+  CURLcode res;
+ 
+  curl = curl_easy_init();
+  if(curl) {
+    curl_easy_setopt(curl, CURLOPT_URL, "http://example.com");
+    /* example.com is redirected, so we tell libcurl to follow redirection */ 
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+ 
+    /* Perform the request, res will get the return code */ 
+    res = curl_easy_perform(curl);
+
+    /* Check for errors */ 
+    if(res != CURLE_OK)
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
+ 
+    /* always cleanup */ 
+    curl_easy_cleanup(curl);
+  }
+}
+
+
+int homeSelection(){
+int menuSelection;
+printf("Make your selection:");
+printf("\n1.) Users Calls []");
+scanf("%d", &menuSelection);
+	switch (menuSelection){
+		case '1':
+			printBanner();
+		default:
+			return 0;
+	}
+}
+
 int readDotFile(){
 int i;
 char * keys[MAXAPIKEYS];
@@ -45,7 +83,7 @@ mandrillDotFile = fopen(MANDRILLDOTFILE, "r");
 int dotFileCheck(){
 	if( access( MANDRILLDOTFILE, F_OK ) != -1 ) {
     	// file exists
-		readDotFile();
+		homeSelection();
 	}	 
 
 	else {
