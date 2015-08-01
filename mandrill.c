@@ -3,10 +3,20 @@
 #include <stdlib.h>
 #include <curl/curl.h>
 
+// Static Length Definitions
 #define MAXAPIKEYS 255
 #define APIKEYLENGTH 30
 
+// File Defintiions
 const char *MANDRILLDOTFILE = "mandrillrc";
+
+// Function Definitions
+int homeSelection();
+
+
+
+
+
 
 void printBanner(){
 printf("\n-------------------------------------------------------------\n");
@@ -20,6 +30,8 @@ printf("#     # #    # #    # #####  #    # # ###### ######  #####\n");
 printf("-------------------------------------------------------------\n\n");
 }
 
+
+// Make a cURL Request with Specified Parameters
 void curlRequest(){
   CURL *curl;
   CURLcode res;
@@ -43,19 +55,35 @@ void curlRequest(){
   }
 }
 
+// Add an API Key to the #MANDRILLDOTFILE
+void addApiKey(){
+	FILE * mandrillDotFile;
+	char apiKey[30];
+	printf ("Enter New API Key: ");
+	scanf("%s", apiKey);
+	mandrillDotFile = fopen (MANDRILLDOTFILE,"a+");
+	fputs (apiKey,mandrillDotFile);
+	fclose (mandrillDotFile);
+	homeSelection();
+}
+
+// Home Menu Selection Switch Statement
 int homeSelection(){
 int menuSelection;
 printf("Make your selection:");
-printf("\n1.) Users Calls []");
+printf("\n1.) Add Additional API Key");
+printf("\n2.) Info Request [/users/info.json]");
 scanf("%d", &menuSelection);
 	switch (menuSelection){
-		case 1:
-			curlRequest();
+
+		case 1: addApiKey();
+		case 2:	curlRequest();
 		default:
 			return 0;
 	}
 }
 
+// Read the API Keys into an Array
 void readDotFile(){
 FILE *mandrillDotFile;
 mandrillDotFile = fopen(MANDRILLDOTFILE, "r");
@@ -72,19 +100,7 @@ printf("choose the API key you wish to use:");
 homeSelection();
 }
 
-void addApiKey(){
-	FILE * mandrillDotFile;
-	char apiKey[30];
-	printf ("Enter New API Key: ");
-	//fgets (apiKey,30,stdin);
-	scanf("%s", apiKey);
-	mandrillDotFile = fopen (MANDRILLDOTFILE,"a+");
-	fputs (apiKey,mandrillDotFile);
-	fclose (mandrillDotFile);
-	homeSelection();
-}
-
-
+// Check for the Validity of a the #MANDRILLDOTFILE
 int dotFileCheck(){
 	if( access( MANDRILLDOTFILE, F_OK ) != -1 ) {
     	// file exists
